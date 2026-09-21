@@ -1,0 +1,339 @@
+<!doctype html>
+<html class="light" lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="QRGen Pro is a dynamic QR code platform for branded, editable, trackable QR campaigns.">
+    <title>QRGen Pro - Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  </head>
+  <body>
+    <section id="authScreen" class="auth-screen">
+      <div class="auth-card" id="authCard">
+        <div class="workspace-brand"><h1>QRGen Pro</h1><p>Workspace</p></div>
+
+        <form id="loginForm" class="auth-form login-form">
+          <h3>Log in</h3>
+          <label>Email <input id="loginEmail" type="email" required autocomplete="email"></label>
+          <label>Password <input id="loginPassword" type="password" required autocomplete="current-password"></label>
+          <button class="primary-action" type="submit">Log in</button>
+          <p class="auth-switch">No account? <a href="#" id="showSignup">Sign up</a></p>
+        </form>
+
+        <form id="signupForm" class="auth-form signup-form">
+          <h3>Create your account</h3>
+          <label>Full name <input id="signupName" type="text" required autocomplete="name"></label>
+          <label>Email <input id="signupEmail" type="email" required autocomplete="email"></label>
+          <label>Password <input id="signupPassword" type="password" required minlength="6" autocomplete="new-password"></label>
+          <button class="primary-action" type="submit">Sign up</button>
+          <p class="auth-switch">Already have an account? <a href="#" id="showLogin">Log in</a></p>
+        </form>
+
+        <p class="auth-error" id="authError" hidden></p>
+      </div>
+    </section>
+
+    <aside class="side-nav hidden" aria-label="Workspace navigation">
+      <div class="workspace-brand">
+        <h1>QRGen Pro</h1>
+        <p>Workspace</p>
+      </div>
+      <a class="create-new" href="#generator" data-page-link><span class="material-symbols-outlined fill">add</span>Create New QR</a>
+      <nav class="task-nav">
+        <a class="task-bar active" href="#home" data-page-link><span class="material-symbols-outlined fill">home</span><strong>Home</strong></a>
+        <a class="task-bar" href="#generator" data-page-link><span class="material-symbols-outlined fill">qr_code_2</span><strong>Generator</strong></a>
+        <a class="task-bar" href="#my-qrs" data-page-link><span class="material-symbols-outlined fill">grid_view</span><strong>My QRs</strong></a>
+        <a class="task-bar" href="#analytics" data-page-link><span class="material-symbols-outlined fill">monitoring</span><strong>Analytics</strong></a>
+        <a class="task-bar" href="#pricing" data-page-link><span class="material-symbols-outlined fill">credit_card</span><strong>Pricing</strong></a>
+        <a class="task-bar" href="#api" data-page-link><span class="material-symbols-outlined fill">hub</span><strong>API</strong></a>
+        <a class="task-bar" href="#help" data-page-link><span class="material-symbols-outlined fill">settings</span><strong>Settings</strong></a>
+      </nav>
+      <div class="nav-foot">
+        <strong>Dynamic QR enabled</strong>
+        <span>Editable destinations, scan analytics, and print exports.</span>
+      </div>
+    </aside>
+
+    <div class="app-shell hidden">
+      <header class="top-bar">
+        <button class="mobile-menu nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+        <div>
+          <h2 id="pageTitle">Home</h2>
+          <p id="pageSubtitle">Choose what you want to build, manage, or review.</p>
+        </div>
+        <div class="top-actions">
+          <a href="#help" aria-label="Help" data-page-link><span class="material-symbols-outlined">help</span></a>
+          <a href="#analytics" aria-label="Notifications" data-page-link><span class="material-symbols-outlined">notifications</span></a>
+          <button class="avatar" id="profileButton" type="button" aria-label="User profile">--</button>
+          <button class="secondary-action" id="logoutButton" type="button">Log out</button>
+        </div>
+      </header>
+
+      <main class="main-canvas">
+        <section class="hero-summary app-page active" id="home" data-title="Home" data-subtitle="Choose what you want to build, manage, or review.">
+          <div>
+            <span class="eyebrow">Professional QR platform</span>
+            <h1>Run every QR campaign from one clean workspace.</h1>
+            <p>Start a new code, revisit saved campaigns, review scan performance, or tune account settings without landing straight inside the generator.</p>
+          </div>
+          <div class="summary-actions">
+            <a class="primary-action" href="#generator" data-page-link>Create QR Code</a>
+            <a class="secondary-action" href="#my-qrs" data-page-link>Open My QRs</a>
+          </div>
+          <div class="home-grid">
+            <a href="#generator" data-page-link><span class="material-symbols-outlined fill">add_circle</span><strong>Create QR</strong><small>Build and customize a scannable code.</small></a>
+            <a href="#my-qrs" data-page-link><span class="material-symbols-outlined fill">grid_view</span><strong>My QRs</strong><small>Manage live and draft campaigns.</small></a>
+            <a href="#analytics" data-page-link><span class="material-symbols-outlined fill">monitoring</span><strong>Analytics</strong><small>See scans, devices, and referrers.</small></a>
+            <a href="#profile" data-page-link><span class="material-symbols-outlined fill">account_circle</span><strong>Profile</strong><small>Review workspace and account details.</small></a>
+          </div>
+        </section>
+
+        <section class="workspace-grid app-page" id="generator" data-title="Generator" data-subtitle="Customize, publish, and export branded QR codes.">
+          <form class="customizer" id="qrForm">
+            <div class="section-title">
+              <span class="eyebrow">Customize QR Code</span>
+              <h3>Style your code</h3>
+            </div>
+
+            <div class="stepper" aria-label="Creation steps">
+              <span class="done"><b>1</b>Content</span>
+              <i></i>
+              <span class="active"><b>2</b>Style</span>
+              <i></i>
+              <span><b>3</b>Finalize</span>
+            </div>
+
+            <article class="panel-card">
+              <h4>Content</h4>
+              <div class="field-grid two">
+                <label>Content type
+                  <select id="qrType" name="qrType">
+                    <option value="url">URL</option>
+                    <option value="text">Text</option>
+                    <option value="wifi">WiFi</option>
+                    <option value="vcard">vCard</option>
+                    <option value="pdf">PDF</option>
+                    <option value="social">Social link</option>
+                  </select>
+                </label>
+                <label>Campaign name
+                  <input id="campaignName" type="text" value="Spring Launch">
+                </label>
+              </div>
+              <label>Destination
+                <input id="qrContent" name="qrContent" type="text" value="https://www.example.com" autocomplete="off">
+              </label>
+              <label>Branded short link
+                <input id="shortLink" type="text" value="qr.example.com/spring">
+              </label>
+            </article>
+
+            <article class="panel-card">
+              <h4>Colors</h4>
+              <div class="field-grid two">
+                <label>Foreground Color
+                  <span class="color-field"><input id="foreground" type="color" value="#07111f"><input id="foregroundText" type="text" value="#07111F" readonly></span>
+                </label>
+                <label>Accent Color
+                  <span class="color-field"><input id="accent" type="color" value="#1f6fff"><input id="accentText" type="text" value="#1F6FFF" readonly></span>
+                </label>
+              </div>
+            </article>
+
+            <article class="panel-card">
+              <h4>Add Logo</h4>
+              <div class="upload-box" role="button" tabindex="0">
+                <span class="material-symbols-outlined">cloud_upload</span>
+                <strong>Click or drag and drop to upload logo</strong>
+                <small>PNG, JPG, SVG up to 2MB</small>
+              </div>
+            </article>
+
+            <article class="panel-card">
+              <h4>Frame Style</h4>
+              <div class="style-grid">
+                <button class="selected" type="button" data-frame-style="standard"><span class="frame-icon square"></span>Standard</button>
+                <button type="button" data-frame-style="circular"><span class="frame-icon circle"></span>Circular</button>
+                <button type="button" data-frame-style="target"><span class="frame-icon target"></span>Target</button>
+                <button type="button" data-frame-style="leaf"><span class="frame-icon leaf"></span>Leaf</button>
+              </div>
+              <div class="field-grid two compact-fields">
+                <label>Module pattern
+                  <select id="pattern">
+                    <option>Classic squares</option>
+                    <option>Rounded pixels</option>
+                    <option>Soft dots</option>
+                    <option>Bold blocks</option>
+                  </select>
+                </label>
+                <label>Outer frame
+                  <select id="frame">
+                    <option>Scan Me tab</option>
+                    <option>Clean border</option>
+                    <option>Coupon frame</option>
+                    <option>No frame</option>
+                  </select>
+                </label>
+              </div>
+            </article>
+
+            <article class="panel-card">
+              <h4>Advanced</h4>
+              <div class="toggle-list">
+                <label><input type="checkbox" checked> Dynamic destination</label>
+                <label><input type="checkbox" checked> UTM tracking</label>
+                <label><input id="passwordToggle" type="checkbox"> Password protected</label>
+                <label><input type="checkbox"> Expiration date</label>
+              </div>
+              <label class="password-field" id="passwordField">Password
+                <input id="qrPassword" type="password" placeholder="Enter scan password">
+              </label>
+              <div class="button-row">
+                <button class="primary-action" type="submit">Customize</button>
+                <button class="secondary-action" type="button" id="bulkButton">Bulk Create</button>
+              </div>
+            </article>
+          </form>
+
+          <aside class="preview-panel" aria-label="QR code preview">
+            <div class="preview-card">
+              <h4>Live Preview</h4>
+              <div class="preview-meta">
+                <span class="status-pill" id="scanStatus">Real QR</span>
+                <span>High error correction</span>
+              </div>
+              <div class="qr-stage">
+                <div class="qr-frame" id="qrFrame">
+                  <div id="qrCanvas" class="qr-canvas" role="img" aria-label="Generated QR code preview"></div>
+                  <span class="center-logo" id="centerLogo">SL</span>
+                  <strong class="frame-label">SCAN ME</strong>
+                </div>
+              </div>
+              <p class="scan-note" id="scanNote">This QR encodes the destination field exactly. Use a real URL if you want the phone to open a working page.</p>
+              <div class="quality-meter">
+                <span>Branding safety</span>
+                <div><span id="qualityBar"></span></div>
+                <strong id="qualityScore">96%</strong>
+              </div>
+              <div class="download-grid">
+                <button type="button" data-format="png"><span class="material-symbols-outlined">download</span>PNG</button>
+                <button type="button" data-format="svg"><span class="material-symbols-outlined">code</span>SVG</button>
+                <button type="button" data-format="pdf"><span class="material-symbols-outlined">picture_as_pdf</span>PDF</button>
+                <button type="button" data-format="print"><span class="material-symbols-outlined">print</span>Print 4K</button>
+              </div>
+            </div>
+          </aside>
+        </section>
+
+        <section class="insight-grid app-page" id="analytics" data-title="Analytics" data-subtitle="Review scan performance for your QR campaigns.">
+          <article><span>Total scans</span><strong id="statTotalScans">0</strong><small id="statScansNote">Across all your QR codes</small></article>
+          <article><span>QR codes tracked</span><strong id="statQrCount">0</strong><small>Live campaigns</small></article>
+          <article><span>Top device</span><strong id="statTopDevice">—</strong><small id="statTopDeviceNote">No scans yet</small></article>
+          <article><span>Last scan</span><strong id="statLastScan">—</strong><small>Most recent activity</small></article>
+          <div class="responsive-table analytics-table">
+            <table>
+              <thead><tr><th>Campaign</th><th>Short link</th><th>Scans</th><th>Last scan</th></tr></thead>
+              <tbody id="analyticsTableBody">
+                <tr><td colspan="4" class="empty-row">No QR codes yet — create one in the Generator.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="data-section app-page" id="my-qrs" data-title="My QRs" data-subtitle="Manage every saved QR campaign in one place.">
+          <div class="section-title">
+            <span class="eyebrow">My QRs</span>
+            <h3>Active QR Codes</h3>
+          </div>
+          <div class="responsive-table">
+            <table>
+              <thead><tr><th>Campaign</th><th>Type</th><th>Short link</th><th>Scans</th><th>Status</th><th></th></tr></thead>
+              <tbody id="myQrsTableBody">
+                <tr><td colspan="6" class="empty-row">Loading your QR codes…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="app-page" id="pricing" data-title="Pricing" data-subtitle="Choose the plan that fits your QR workflow.">
+          <div class="plan-status-banner" id="planStatusBanner">Current plan: <strong id="currentPlanLabel">Free</strong></div>
+          <div class="product-grid">
+            <article class="plan-card" data-plan="free"><span>Free</span><strong>₹0</strong><p>Unlimited static QR codes, manual export, no scan tracking.</p></article>
+            <article class="plan-card" data-plan="starter"><span>Starter</span><strong>₹999 <small>/mo</small></strong><p>Dynamic QR, short links, real scan analytics.</p><button class="primary-action select-plan" data-plan="starter" type="button">Choose Starter</button></article>
+            <article class="plan-card" data-plan="growth"><span>Growth</span><strong>₹2999 <small>/mo</small></strong><p>Everything in Starter, plus password protection, bulk create, API access.</p><button class="primary-action select-plan" data-plan="growth" type="button">Choose Growth</button></article>
+          </div>
+
+          <div class="upi-panel" id="upiPanel" hidden>
+            <h4>Pay via UPI to activate <span id="upiPlanName"></span></h4>
+            <p>Send <strong id="upiAmount"></strong> to UPI ID:</p>
+            <p class="upi-id-box" id="upiIdBox"></p>
+            <p class="upi-note">After paying, enter the UPI transaction reference number below. We'll manually verify it and activate your plan — usually within a few hours.</p>
+            <form id="upiForm">
+              <input type="hidden" id="upiSelectedPlan">
+              <label>UPI transaction reference / UTR number
+                <input id="upiRefInput" type="text" required placeholder="e.g. 234567891234">
+              </label>
+              <button class="primary-action" type="submit">Submit for verification</button>
+            </form>
+          </div>
+
+          <div class="responsive-table">
+            <table>
+              <thead><tr><th>Submitted</th><th>Plan</th><th>Amount</th><th>UTR</th><th>Status</th></tr></thead>
+              <tbody id="paymentsTableBody">
+                <tr><td colspan="5" class="empty-row">No payment submissions yet.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="app-page" id="api" data-title="API" data-subtitle="Connect QR campaigns to your stack.">
+          <div class="product-grid">
+            <article><span>REST API</span><strong>Create QR codes from your app</strong><p>Generate dynamic QR campaigns, update destinations, and pull scan summaries.</p></article>
+            <article><span>Auth</span><strong>Bearer token</strong><p>Every request needs your personal access token below plus your Supabase project's REST endpoint.</p></article>
+          </div>
+          <div class="panel-card">
+            <h4>Your API access</h4>
+            <p>Requires the <strong>Growth</strong> plan (verified). Use your Supabase project URL as the API base and your access token below as the Bearer token for requests to the <code>qr_codes</code> table via PostgREST (<code>/rest/v1/qr_codes</code>).</p>
+            <div class="upi-id-box" id="apiTokenBox">Log in and upgrade to Growth to reveal your token.</div>
+          </div>
+        </section>
+
+        <section class="product-grid app-page" id="help" data-title="Settings" data-subtitle="Configure QR safety, exports, and workspace defaults.">
+          <article><span>QR Safety</span><strong>High contrast defaults</strong><p>Keep exports readable with quality checks, quiet-zone spacing, and high error correction.</p></article>
+          <article><span>Password QR</span><strong>Require scan password</strong><p>Enable password prompts while building protected campaign destinations.</p></article>
+          <article><span>Exports</span><strong>Print-ready output</strong><p>Download PNG, SVG, and PDF/print sheets for production assets.</p></article>
+          <article><span>Workspace</span><strong>Brand defaults</strong><p>Save standard colors, logo initials, and frame choices for the team.</p></article>
+        </section>
+
+        <section class="profile-page app-page" id="profile" data-title="Profile" data-subtitle="Review account and workspace details.">
+          <article>
+            <div class="profile-avatar" id="profileAvatar">--</div>
+            <div>
+              <span class="eyebrow">Signed in</span>
+              <h3 id="profileName">—</h3>
+              <p>Workspace owner for QRGen Pro campaigns.</p>
+            </div>
+          </article>
+          <div class="profile-grid">
+            <section><span>Account</span><strong id="profileEmail">—</strong><p>Profile actions are now connected to this page.</p></section>
+            <section><span>Plan</span><strong id="profilePlan">Free</strong><p id="profilePlanNote">Upgrade from the Pricing page for dynamic QR and analytics.</p></section>
+            <section><span>Default brand</span><strong>QRGen Pro</strong><p>Accent, foreground, and frame settings sync from the generator.</p></section>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="heroQr" hidden></div>
+    <script src="lib/qrcode.js"></script>
+    <script src="config.js"></script>
+    <script src="auth.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
